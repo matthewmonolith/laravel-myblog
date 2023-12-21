@@ -5,6 +5,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="//unpkg.com/alpinejs" defer></script>
+
 <body style="font-family: Open Sans, sans-serif">
     <section class="px-6 py-8">
         <nav class="md:flex md:justify-between md:items-center">
@@ -14,13 +15,21 @@
                 </a>
             </div>
 
-            <div class="mt-8 md:mt-0">
-                <a href="/" class="text-xs font-bold uppercase">Home Page</a>
+            <div class="mt-8 md:mt-0 flex items-center">
+                @auth
+                <span class="font-bold uppercase mr-4">Welcome, {{ auth()->user()->name }}</span>
+                <form method="POST" action="/logout">
+                    @csrf
+                    <button type="submit" class="font-bold uppercase text-blue-500 hover:underline focus:outline-none focus:underline">Logout</button>
+                </form>
+                @else
+                <a href="/register" class="text-xs font-bold uppercase mr-4 text-blue-500 hover:underline">Register</a>
+                <a href="/login" class="text-xs font-bold uppercase mr-4 text-blue-500 hover:underline">Login</a>
+                @endauth
 
-                <a href="#" class="bg-blue-500 ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-5">
-                    Subscribe for Updates
-                </a>
+                <a href="#" class="bg-blue-500 ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-5 hover:bg-blue-600 transition duration-300">Subscribe for Updates</a>
             </div>
+
         </nav>
 
         {{$slot}}
@@ -39,13 +48,10 @@
                                 <img src="/images/mailbox-icon.svg" alt="mailbox letter">
                             </label>
 
-                            <input id="email" type="text" placeholder="Your email address"
-                                   class="lg:bg-transparent py-2 lg:py-0 pl-4 focus-within:outline-none">
+                            <input id="email" type="text" placeholder="Your email address" class="lg:bg-transparent py-2 lg:py-0 pl-4 focus-within:outline-none">
                         </div>
 
-                        <button type="submit"
-                                class="transition-colors duration-300 bg-blue-500 hover:bg-blue-600 mt-4 lg:mt-0 lg:ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-8"
-                        >
+                        <button type="submit" class="transition-colors duration-300 bg-blue-500 hover:bg-blue-600 mt-4 lg:mt-0 lg:ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-8">
                             Subscribe
                         </button>
                     </form>
@@ -53,4 +59,9 @@
             </div>
         </footer>
     </section>
+    @if (session()->has('success'))
+    <div x-data="{ showFlashMessage: @if (session()->has('success')) true @else false @endif }" x-show="showFlashMessage" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" @click="showFlashMessage = false" class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-md shadow-md">
+        <p>{{ session('success') }}</p>
+    </div>
+    @endif
 </body>
