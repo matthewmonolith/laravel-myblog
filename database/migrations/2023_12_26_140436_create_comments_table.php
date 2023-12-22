@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
+            //if i delete a post, how do we delete comment too?
             $table->id();
-            $table->foreignId('category_id');
+            // $table->unsignedBigInteger('user_id'); //when declaring foreign id, make sure tpye is the same, so obviously they match
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('slug')->unique();
-            $table->string('title');
-            $table->text('excerpt');
+            $table->foreignId('post_id')->constrained()->cascadeOnDelete(); //how to create a foreign constraint
             $table->text('body');
             $table->timestamps();
-            $table->timestamp('published_at')->nullable();
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('comments');
     }
 };

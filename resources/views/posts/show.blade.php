@@ -13,7 +13,9 @@
                     <div class="flex items-center lg:justify-center text-sm mt-4">
                         <img src="/images/lary-avatar.svg" alt="Lary avatar">
                         <div class="ml-3 text-left">
-                            <a href="/?author={{$post->author->username}}"><h5 class="font-bold">{{$post->author->name}}</h5></a>
+                            <a href="/?author={{$post->author->username}}">
+                                <h5 class="font-bold">{{$post->author->name}}</h5>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -39,7 +41,7 @@
                     </div>
 
                     <h1 class="font-bold text-3xl lg:text-4xl mb-10">
-                       {{$post->title}}
+                        {{$post->title}}
                     </h1>
 
                     <div class="space-y-4 lg:text-lg leading-loose">
@@ -48,6 +50,35 @@
                             laboris nisi ut aliquip ex ea commodo consequat.</p>
                     </div>
                 </div>
+                <section class="col-span-8 col-start-5 mt-10 space-y-6">
+                    @auth
+                    <form method="POST" action='/posts/{{$post->slug}}/comments' class="border border-gray-200 p-6 rounded-xl">
+                        @csrf
+
+                        <header class="flex items-center">
+                            <img src="https://i.pravatar.cc/60?u={{auth()->id()}}" alt="avi" width="40" height="40" class="rounded-full">
+                            <h2 class="ml-4">Want to participate?</h2>
+                        </header>
+
+                        <div class="mt-6">
+                            <textarea name="body" id="body" cols="30" rows="10" class="w-full" placeholder="quick think of something to say!" required></textarea>
+                            @error('body')
+                            <span class="text-xs text-red">{{$message}}</span>
+                            @enderror
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-blue-500 text-white uppercase font-semibold text-xs py-2 px-10 rounded-2xl hover:bg-blue-600">Post</button>
+                        </div>
+                    </form>
+                    @else
+                    <p><a href="/login">Login to Comment</a></p>
+                    @endauth
+
+                    @foreach ($post->comments as $comment)
+                    <x-post-comment :comment="$comment" />
+                    @endforeach
+                </section>
             </article>
         </main>
     </section>
